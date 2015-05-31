@@ -27,6 +27,9 @@ void printCost()
 
 void findPath(pt start)
 {
+    int mRow[] = { -1, 1, 0, 0 };
+    int mCol[] = { 0, 0, -1, 1 };
+
     queue<pt> q;
     q.push(start);
 
@@ -34,44 +37,19 @@ void findPath(pt start)
     {
         pt curPt = q.front(); q.pop();
 
-        if (curPt.i - 1 != -1)
+        for (int i = 0; i < 4; i++)
         {
-            int newCost = curPt.cost + grid[curPt.i - 1][curPt.j];
-            if (cost[curPt.i - 1][curPt.j] > newCost)
+            if (curPt.i + mRow[i] != -1 && curPt.i + mRow[i] != rowCnt &&
+                curPt.j + mCol[i] != -1 && curPt.j + mCol[i] != colCnt)
             {
-                pt newPt = { curPt.i - 1, curPt.j, newCost };
-                q.push(newPt);
-                cost[newPt.i][newPt.j] = newCost;
-            }
-        }
-        if (curPt.i + 1 != rowCnt)
-        {
-            int newCost = curPt.cost + grid[curPt.i + 1][curPt.j];
-            if (cost[curPt.i + 1][curPt.j] > newCost)
-            {
-                pt newPt = { curPt.i + 1, curPt.j, newCost };
-                q.push(newPt);
-                cost[newPt.i][newPt.j] = newCost;
-            }
-        }
-        if (curPt.j - 1 != -1)
-        {
-            int newCost = curPt.cost + grid[curPt.i][curPt.j - 1];
-            if (cost[curPt.i][curPt.j - 1] > newCost)
-            {
-                pt newPt = { curPt.i, curPt.j - 1, newCost };
-                q.push(newPt);
-                cost[newPt.i][newPt.j] = newCost;
-            }
-        }
-        if (curPt.j + 1 != colCnt)
-        {
-            int newCost = curPt.cost + grid[curPt.i][curPt.j + 1];
-            if (cost[curPt.i][curPt.j + 1] > newCost)
-            {
-                pt newPt = { curPt.i, curPt.j + 1, newCost };
-                q.push(newPt);
-                cost[newPt.i][newPt.j] = newCost;
+                pt newPt = { curPt.i + mRow[i], curPt.j + mCol[i], 0 };
+                int newCost = curPt.cost + grid[newPt.i][newPt.j];
+                if (cost[newPt.i][newPt.j] > newCost)
+                {
+                    newPt.cost = newCost;
+                    q.push(newPt);
+                    cost[newPt.i][newPt.j] = newCost;
+                }
             }
         }
     }

@@ -6,46 +6,40 @@
 using namespace std;
 
 int values[10000];
-int lock, unlock;
 int btnCnt;
 int buttons[MAX_BTNS];
 
-int getClicks()
+struct agent
 {
-    queue<int> q;
-    q.push(lock);
-    values[lock] = 0;
+    int value, clicks;
+};
+
+int getClicks(int start, int end)
+{
+    agent s = { start, 0 };
+
+    queue<agent> q;
+    q.push(s);
+    values[s.value] = s.clicks;
 
     while (!q.empty())
     {
-        int cur = q.front(); q.pop();
+        agent cur = q.front(); q.pop();
+        if (cur.value == end) return cur.clicks;
 
         for (int i = 0; i < MAX_BTNS; i++)
         {
-            int next = (cur + buttons[i]) % 10000;
-            if (values[next] == -1)
+            agent next = { (cur.value + buttons[i]) % 10000, cur.clicks + 1 };
+
+            if (values[next.value] == -1)
             {
-                values[next] = cur;
+                values[next.value] = next.clicks;
                 q.push(next);
             }
         }
     }
 
-    if (lock == unlock)
-        return 0;
-    else if (values[unlock] != -1)
-    {
-        int clicks = 1;
-        int cur = values[unlock];
-        while (cur != lock)
-        {
-            cur = values[cur];
-            clicks++;
-        }
-        return clicks;
-    }
-    else
-        return -1;
+    return -1;
 }
 
 int main()
@@ -53,6 +47,7 @@ int main()
     int cnt = 1;
     while (true)
     {
+        int lock, unlock;
         scanf("%d %d %d", &lock, &unlock, &btnCnt);
         if (lock == 0 && unlock == 0 && btnCnt == 0) break;
 
@@ -62,7 +57,7 @@ int main()
         for (int i = 0; i < btnCnt; i++)
             scanf("%d", &buttons[i]);
 
-        int clicks = getClicks();
+        int clicks = getClicks(lock, unlock);
         if (clicks != -1) printf("Case %d: %d\n", cnt, clicks);
         else printf("Case %d: Permanently Locked\n", cnt);
 

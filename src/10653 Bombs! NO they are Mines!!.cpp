@@ -12,6 +12,10 @@ struct pt
 // find shortest path using BFS
 int findPath(int grid[][MAX_GRID], int rowCnt, int colCnt, pt start, pt end)
 {
+    int mRow[] = { -1, 1, 0, 0 };
+    int mCol[] = { 0, 0, -1, 1 };
+    int dir[] = { 2, 4, 1, 3 };
+
     int path[MAX_GRID][MAX_GRID];
     grid[start.i][start.j] = 1;
 
@@ -23,29 +27,18 @@ int findPath(int grid[][MAX_GRID], int rowCnt, int colCnt, pt start, pt end)
         pt curPt = q.front();
         q.pop();
 
-        if (curPt.i - 1 != -1 && grid[curPt.i - 1][curPt.j] == 0)
+        for (int i = 0; i < 4; i++)
         {
-            pt newPt = { curPt.i - 1, curPt.j };
-            q.push(newPt);
-            grid[newPt.i][newPt.j] = 2;
-        }
-        if (curPt.i + 1 != rowCnt && grid[curPt.i + 1][curPt.j] == 0)
-        {
-            pt newPt = { curPt.i + 1, curPt.j };
-            q.push(newPt);
-            grid[newPt.i][newPt.j] = 4;
-        }
-        if (curPt.j - 1 != -1 && grid[curPt.i][curPt.j - 1] == 0)
-        {
-            pt newPt = { curPt.i, curPt.j - 1 };
-            q.push(newPt);
-            grid[newPt.i][newPt.j] = 1;
-        }
-        if (curPt.j + 1 != colCnt && grid[curPt.i][curPt.j + 1] == 0)
-        {
-            pt newPt = { curPt.i, curPt.j + 1 };
-            q.push(newPt);
-            grid[newPt.i][newPt.j] = 3;
+            if (curPt.i + mRow[i] != -1 && curPt.i + mRow[i] != rowCnt &&
+                curPt.j + mCol[i] != -1 && curPt.j + mCol[i] != colCnt)
+            {
+                if (grid[curPt.i + mRow[i]][curPt.j + mCol[i]] == 0)
+                {
+                    pt newPt = { curPt.i + mRow[i], curPt.j+ mCol[i] };
+                    q.push(newPt);
+                    grid[newPt.i][newPt.j] = dir[i];
+                }
+            }
         }
     }
 
