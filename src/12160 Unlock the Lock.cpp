@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int values[10000];
+bool visited[10000];
 int btnCnt;
 int buttons[MAX_BTNS];
 
@@ -20,7 +20,7 @@ int getClicks(int start, int end)
 
     queue<agent> q;
     q.push(s);
-    values[s.value] = s.clicks;
+    visited[s.value] = true;
 
     while (!q.empty())
     {
@@ -31,9 +31,9 @@ int getClicks(int start, int end)
         {
             agent next = { (cur.value + buttons[i]) % 10000, cur.clicks + 1 };
 
-            if (values[next.value] == -1)
+            if (!visited[next.value])
             {
-                values[next.value] = next.clicks;
+                visited[next.value] = true;
                 q.push(next);
             }
         }
@@ -42,6 +42,7 @@ int getClicks(int start, int end)
     return -1;
 }
 
+// wrong answer
 int main()
 {
     int cnt = 1;
@@ -52,7 +53,7 @@ int main()
         if (lock == 0 && unlock == 0 && btnCnt == 0) break;
 
         for (int i = 0; i < 10000; i++)
-            values[i] = -1;
+            visited[i] = false;
 
         for (int i = 0; i < btnCnt; i++)
             scanf("%d", &buttons[i]);

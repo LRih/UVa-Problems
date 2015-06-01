@@ -8,10 +8,31 @@ using namespace std;
 int rowCnt, colCnt;
 int grid[MAX_GRID][MAX_GRID];
 int cost[MAX_GRID][MAX_GRID];
+bool visited[MAX_GRID][MAX_GRID];
 
-struct pt
+struct agent
 {
     int i, j, cost;
+
+    agent()
+    {
+    }
+
+    agent(int _i, int _j, int _cost)
+    {
+        i = _i;
+        j = _j;
+        cost = _cost;
+    }
+};
+
+class compare
+{
+public:
+    bool operator() (agent& a1, agent& a2)
+    {
+        return a1.cost >= a2.cost;
+    }
 };
 
 void printCost()
@@ -25,37 +46,38 @@ void printCost()
     }
 }
 
-void findPath(pt start)
+void findPath(int si, int sj)
 {
     int mRow[] = { -1, 1, 0, 0 };
     int mCol[] = { 0, 0, -1, 1 };
 
-    queue<pt> q;
-    q.push(start);
+    priority_queue<agent, vector<agent>, compare> q;
+    q.push(agent(0, 0, grid[0][0]));
+
+    cost[0][0] = grid[0][0];
 
     while (!q.empty())
     {
-        pt curPt = q.front(); q.pop();
+        agent cur = q.top(); q.pop();
+
+        if (visited[cur.i][cur.j]) continue;
+        visited[cur.i][cur.j] = true;
 
         for (int i = 0; i < 4; i++)
         {
-            if (curPt.i + mRow[i] != -1 && curPt.i + mRow[i] != rowCnt &&
-                curPt.j + mCol[i] != -1 && curPt.j + mCol[i] != colCnt)
+            int ni = cur.i + mRow[i];
+            int nj = cur.j + mCol[i];
+
+            if (ni < 0 || ni >= rowCnt || nj < 0 || nj >= colCnt)
+                continue;
+
+            if (cur.cost + grid[ni][nj] < cost[ni][nj])
             {
-                pt newPt = { curPt.i + mRow[i], curPt.j + mCol[i], 0 };
-                int newCost = curPt.cost + grid[newPt.i][newPt.j];
-                if (cost[newPt.i][newPt.j] > newCost)
-                {
-                    newPt.cost = newCost;
-                    q.push(newPt);
-                    cost[newPt.i][newPt.j] = newCost;
-                }
+                q.push(agent(ni, nj, cur.cost + grid[ni][nj]));
+                cost[ni][nj] = cur.cost + grid[ni][nj];
             }
         }
     }
-
-    if (rowCnt == 1 && colCnt == 1)
-        cost[0][0] = grid[0][0];
 }
 
 int main()
@@ -71,11 +93,11 @@ int main()
             {
                 scanf("%d", &grid[i][j]);
                 cost[i][j] = INT_MAX;
+                visited[i][j] = false;
             }
         }
 
-        pt start = { 0, 0, grid[0][0] };
-        findPath(start);
+        findPath(0, 0);
         printf("%d\n", cost[rowCnt - 1][colCnt - 1]);
     }
 }

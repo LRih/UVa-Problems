@@ -30,8 +30,8 @@ bool isEmptyPath(vector<vector<int> >* nodes, int graph[][MAX_NODES], int start,
 
     while (!q.empty())
     {
-        int cur = q.front();
-        q.pop();
+        int cur = q.front(); q.pop();
+        
         for (int i = 0; i < (*nodes)[cur].size(); i++)
         {
             int next = (*nodes)[cur][i];
@@ -115,7 +115,7 @@ int main()
         }
 
         printf("Network %d\n", count);
-        printf("The bandwidth is %d.\n", getMaxFlow(&nodes, capacity, start, end));
+        printf("The bandwidth is %d.\n\n", getMaxFlow(&nodes, capacity, start, end));
 
         count++;
     }

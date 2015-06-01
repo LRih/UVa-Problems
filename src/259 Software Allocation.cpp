@@ -18,6 +18,8 @@ bool findAllocation(int remaining)
 
         for (int j = 3; jobs[i][j] != ';'; j++) // iterate all computers that can run this prg
         {
+            if (jobs[i][j] == '_') continue;
+
             int index = jobs[i][j] - 48;
             if (programs[index] != '_') continue; // computer not free
             
@@ -42,10 +44,40 @@ int programsRemaining()
     return remaining;
 }
 
+int getConflictCount(int computer)
+{
+    int cnt = 0;
+    for (int i = 0; i < jobCnt; i++)
+        for (int j = 3; jobs[i][j] != ';'; j++)
+            if (jobs[i][j] - 48 == computer) cnt++;
+    return cnt;
+}
+
+void processDefinite()
+{
+    for (int i = 0; i < jobCnt; i++)
+    {
+        for (int j = 3; jobs[i][j] != ';'; j++)
+        {
+            if (jobs[i][1] - 48 == 0) continue; // no prg remaining in job
+
+            int conflicts = getConflictCount(jobs[i][j] - 48);
+            if (conflicts == 1)
+            {
+                programs[jobs[i][j] - 48] = jobs[i][0];
+                jobs[i][j] = '_';
+                jobs[i][1]--;
+            }
+        }
+    }
+}
+
 void processJobs()
 {
     for (int i = 0; i < MAX_PROGRAMS; i++)
         programs[i] = '_';
+
+    processDefinite();
 
     if (findAllocation(programsRemaining()))
     {
@@ -57,6 +89,7 @@ void processJobs()
         printf("!\n");
 }
 
+// presentation error
 int main()
 {
     while (true)
