@@ -46,7 +46,7 @@ int main()
                 if (grid[i][j] == '.') grid[i][j] = getMines(i, j) + 48;
 
 
-        if (field > 0) printf("\n");
+        if (field > 1) printf("\n");
         printf("Field #%d:\n", field);
         for (int i = 0; i < h; i++)
         {

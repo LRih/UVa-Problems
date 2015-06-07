@@ -28,7 +28,7 @@ void printCost()
     }
 }
 
-// Dijkstra's algorithm
+// bfs
 int findPath(int target)
 {
     queue<agent> q;

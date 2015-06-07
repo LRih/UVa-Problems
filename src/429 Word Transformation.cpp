@@ -59,20 +59,17 @@ int findPath()
     return -1;
 }
 
-// unfinished input
+// runtime error
 int main()
 {
     int testCnt = 0;
     scanf("%d", &testCnt);
-    while (testCnt--)
+    for (int t = 0; t < testCnt; t++)
     {
-        getchar();
-        getchar();
-
         wordCnt = 0;
         while (true)
         {
-            scanf("%s\n", words[wordCnt]);
+            scanf("%s", words[wordCnt]);
             if (words[wordCnt][0] == '*') break;
             wordCnt++;
         }
@@ -80,7 +77,7 @@ int main()
         while (true)
         {
             char s[WORD_LEN], e[WORD_LEN];
-            scanf("%s %s\n", s, e);
+            scanf("%s %s", s, e);
 
             for (int i = 0; i < wordCnt; i++)
             {
@@ -88,14 +85,13 @@ int main()
                 if (strcmp(e, words[i]) == 0) end = i;
             }
 
+            if (testCnt > 1) putchar('\n');
             printf("%s %s %d\n", s, e, findPath());
 
-            if (cin.peek() == '\n') break;
-            if (cin.peek() == EOF)
-            {
-                putchar('\n');
+            getchar();
+
+            if (cin.peek() == '\n' || cin.peek() == EOF)
                 break;
-            }
         }
     }
 }

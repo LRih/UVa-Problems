@@ -27,7 +27,7 @@ int getClicks(int start, int end)
         agent cur = q.front(); q.pop();
         if (cur.value == end) return cur.clicks;
 
-        for (int i = 0; i < MAX_BTNS; i++)
+        for (int i = 0; i < btnCnt; i++)
         {
             agent next = { (cur.value + buttons[i]) % 10000, cur.clicks + 1 };
 
@@ -42,7 +42,6 @@ int getClicks(int start, int end)
     return -1;
 }
 
-// wrong answer
 int main()
 {
     int cnt = 1;
