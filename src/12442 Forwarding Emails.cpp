@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <vector>
 #include <stack>
 #define MAX_NODES 50000
 
@@ -12,28 +13,46 @@ bool visited[MAX_NODES];
 
 int trace(int start)
 {
-    for (int i = 0; i < nodeCnt; i++)
-        visited[i] = false;
+    if (visited[start]) return cache[start];
 
-    int cur = start;
-    int length = 0;
+    vector<int> path;
+    path.push_back(start);
+    visited[start] = true;
+
     while (true)
     {
-        if (visited[network[cur]])
+        int cur = path[path.size() - 1];
+        int next = network[cur];
+
+        // arrived at pre-calculated path
+        if (visited[next] && cache[next] != -1)
         {
-            cache[start] = length;
-            return length;
+            for (int i = 0; i < path.size(); i++)
+                cache[path[i]] = cache[next] + path.size() - i;
+            return cache[start];
         }
 
-        if (cache[cur] != -1)
+        // arrived at cycle
+        if (visited[next])
         {
-            cache[start] = length + cache[cur] - 1;
-            return length + cache[cur] - 1;
+            int i;
+            int cycleLen = 1;
+            for (i = path.size() - 1; path[i] != next; i--)
+                cycleLen++;
+
+            for (int j = i; j < path.size(); j++)
+                cache[path[j]] = cycleLen;
+
+            for (int j = i - 1; j >= 0; j--)
+            {
+                cycleLen++;
+                cache[path[j]] = cycleLen;
+            }
+            return cache[start];
         }
 
-        visited[network[cur]] = true;
-        cur = network[cur];
-        length++;
+        path.push_back(next);
+        visited[next] = true;
     }
 }
 
@@ -47,20 +66,19 @@ int getLongest()
 
     int bestStart = -1;
     int max = 0;
-    for (int i = nodeCnt - 1; i >= 0; i--)
+    for (int i = 0; i < nodeCnt; i++)
     {
         int newMax = trace(i);
-        if (newMax >= max)
+        if (newMax > max)
         {
-            max = newMax;
             bestStart = i;
+            max = newMax;
         }
     }
 
     return bestStart;
 }
 
-// time limit
 int main()
 {
     int tests;
