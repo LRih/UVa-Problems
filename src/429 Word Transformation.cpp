@@ -64,8 +64,11 @@ int main()
 {
     int testCnt = 0;
     scanf("%d", &testCnt);
+    getchar();
     for (int t = 0; t < testCnt; t++)
     {
+        getchar();
+
         wordCnt = 0;
         while (true)
         {
@@ -73,6 +76,7 @@ int main()
             if (words[wordCnt][0] == '*') break;
             wordCnt++;
         }
+        getchar();
 
         while (true)
         {
@@ -84,11 +88,10 @@ int main()
                 if (strcmp(s, words[i]) == 0) start = i;
                 if (strcmp(e, words[i]) == 0) end = i;
             }
-
-            if (testCnt > 1) putchar('\n');
-            printf("%s %s %d\n", s, e, findPath());
-
             getchar();
+
+            if (testCnt > 0) putchar('\n');
+            printf("%s %s %d\n", s, e, findPath());
 
             if (cin.peek() == '\n' || cin.peek() == EOF)
                 break;
