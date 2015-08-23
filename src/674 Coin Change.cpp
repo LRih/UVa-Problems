@@ -1,37 +1,59 @@
 #include <cstdio>
-#include <algorithm>
+#define COIN_CNT 5
+#define MAX_VALUE 7489
 
 using namespace std;
 
-int total;
+int coins[] = { 50, 25, 10, 5, 1 };
 
-int countWays()
+long long cache[COIN_CNT][MAX_VALUE + 1];
+
+long long count(int start, int value)
 {
-    int ways = 1;
-    int denom[] = { 50, 25, 10, 5, 1 };
-    int reps[] = { 37, 13, 4, 2, 1 };
-    int counts[] = { 0, 0, 0, 0, 0 };
+    // invalid solution
+    if (value < 0) return 0;
 
-    for (int i = 0; i < 5; i++)
+    // accepted solution
+    if (value == 0) return 1;
+
+    // equal to no. solutions containing start + no. solutions not containing start
+    int x = 0, y = 0;
+
+    int newVal = value - coins[start];
+    if (newVal >= 0)
     {
-        counts[i] = total / denom[i];
-        total = max(total - denom[i] * counts[i], 0);
+        if (cache[start][newVal] == -1) cache[start][newVal] = count(start, newVal);
+        x = cache[start][newVal];
     }
 
-    for (int i = 0; i < 5; i++)
-        if (counts[i] > 0)
-            ways *= reps[i] * counts[i];
+    if (start + 1 != COIN_CNT)
+    {
+        if (cache[start + 1][value] == -1) cache[start + 1][value] = count(start + 1, value);
+        y = cache[start + 1][value];
+    }
 
-    return ways;
+    return x + y;
 }
 
-// wrong answer
+void dp()
+{
+    for (int i = 0; i <= MAX_VALUE; i++)
+        for (int j = 0; j < COIN_CNT; j++)
+            cache[j][i] = -1;
+
+    for (int i = 0; i <= MAX_VALUE; i++)
+        for (int j = 0; j < COIN_CNT; j++)
+            cache[j][i] = count(j, i);
+}
+
 int main()
 {
-    while (scanf("%d", &total) == 1)
-    {
-        printf("%d\n", countWays());
-    }
+    int n;
+
+    dp();
+
+    while (scanf("%d", &n) == 1)
+        printf("%lld\n", cache[0][n]);
 }
 
 /*

@@ -42,6 +42,7 @@ void doCut(int start, int end)
     }
 }
 
+// unfinished
 int main()
 {
     while (true)
